@@ -52,12 +52,17 @@
   <!-- Main -->
   <main class="max-w-5xl mx-auto px-4 pb-16 mt-6">
 
-    <!-- Search -->
-    <div class="mb-6">
+    <!-- Search + Inquiry Button -->
+    <div class="mb-6 flex items-center gap-3">
       <input type="text" id="searchInput" placeholder="🔍 닉네임 또는 아이디 검색..."
-        class="w-full md:w-80 px-4 py-2.5 rounded-xl border border-point/30 bg-white
+        class="flex-1 md:flex-none md:w-80 px-4 py-2.5 rounded-xl border border-point/30 bg-white
         focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm text-txt
         placeholder:text-sub/60">
+      <button onclick="openInquiryModal()"
+        class="flex-shrink-0 px-4 py-2.5 rounded-xl bg-accent text-white text-sm font-semibold
+        hover:bg-accent/90 transition-colors">
+        ✉️ 문의
+      </button>
     </div>
 
     <!-- Member Count -->
@@ -80,6 +85,37 @@
     </div>
 
   </main>
+
+  <!-- Inquiry Modal -->
+  <div id="inquiryModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm border border-point/20">
+      <h3 class="font-semibold text-txt text-lg mb-1">✉️ 문의하기</h3>
+      <p class="text-sub text-xs mb-4">누락이나 변경 사항을 적어주세요</p>
+      <form id="inquiryForm" class="space-y-3">
+        <div>
+          <label class="block text-sm text-txt mb-1">닉네임</label>
+          <input type="text" id="inquiryNickname" required placeholder="닉네임 입력"
+            class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+            focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm text-txt mb-1">내용</label>
+          <textarea id="inquiryContent" required rows="3" placeholder="예: OO 숙제 누락 / 수량 변경 요청"
+            class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+            focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm resize-none"></textarea>
+        </div>
+        <div class="flex gap-2 pt-1">
+          <button type="submit"
+            class="flex-1 py-2 rounded-xl bg-accent text-white text-sm font-semibold
+            hover:bg-accent/90 transition-colors">보내기</button>
+          <button type="button" onclick="closeInquiryModal()"
+            class="flex-1 py-2 rounded-xl border border-sub/30 text-sub text-sm
+            hover:bg-gray-50 transition-colors">취소</button>
+        </div>
+      </form>
+      <p id="inquirySuccess" class="hidden text-accent text-sm text-center mt-3 font-semibold">✅ 문의가 접수되었습니다!</p>
+    </div>
+  </div>
 
   <!-- Footer -->
   <footer class="text-center py-6 text-sub text-xs">

@@ -146,3 +146,47 @@ async function loadUpboData() {
 }
 
 document.addEventListener('DOMContentLoaded', loadUpboData);
+
+// ============================================
+// ✉️ 문의 기능
+// ============================================
+
+function openInquiryModal() {
+  document.getElementById('inquiryModal').classList.remove('hidden');
+  document.getElementById('inquirySuccess').classList.add('hidden');
+  document.getElementById('inquiryForm').classList.remove('hidden');
+  document.getElementById('inquiryForm').reset();
+}
+
+function closeInquiryModal() {
+  document.getElementById('inquiryModal').classList.add('hidden');
+}
+
+document.addEventListener('click', (e) => {
+  const modal = document.getElementById('inquiryModal');
+  if (e.target === modal) closeInquiryModal();
+});
+
+document.addEventListener('DOMContentLoaded', () => {
+  const form = document.getElementById('inquiryForm');
+  if (form) {
+    form.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const nickname = document.getElementById('inquiryNickname').value.trim();
+      const content = document.getElementById('inquiryContent').value.trim();
+      if (!nickname || !content) return;
+
+      const sb = initSupabase();
+      const { error } = await sb.from('upbo_inquiries').insert({ nickname, content });
+
+      if (error) {
+        alert('문의 접수 실패: ' + error.message);
+        return;
+      }
+
+      form.classList.add('hidden');
+      document.getElementById('inquirySuccess').classList.remove('hidden');
+      setTimeout(() => closeInquiryModal(), 2000);
+    });
+  }
+});

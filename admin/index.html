@@ -97,6 +97,7 @@
         <button class="tab-btn active pb-3 text-sm" data-tab="assign">📝 숙제 배정</button>
         <button class="tab-btn pb-3 text-sm" data-tab="members">👥 시청자 관리</button>
         <button class="tab-btn pb-3 text-sm" data-tab="types">⚙️ 항목 관리</button>
+        <button class="tab-btn pb-3 text-sm" data-tab="inquiries">✉️ 문의 <span id="inquiryBadge" class="hidden ml-1 px-1.5 py-0.5 text-[10px] bg-accent text-white rounded-full">0</span></button>
       </div>
     </div>
 
@@ -232,6 +233,21 @@
           <h2 class="font-semibold text-txt mb-4">⚙️ 숙제 항목 목록</h2>
           <div id="typeTable" class="space-y-2">
             <!-- JS에서 동적 렌더링 -->
+          </div>
+        </div>
+      </div>
+      <!-- ========== TAB: ubb38uc758 uad00ub9ac ========== -->
+      <div id="tab-inquiries" class="tab-content">
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6">
+          <div class="flex items-center justify-between mb-4">
+            <h2 class="font-semibold text-txt">✉️ 문의 목록</h2>
+            <button onclick="deleteCheckedInquiries()"
+              class="px-3 py-1.5 rounded-lg border border-sub/30 text-sub text-xs
+              hover:bg-red-50 hover:text-red-400 hover:border-red-200 transition-colors">
+              🗑 체크된 항목 삭제
+            </button>
+          </div>
+          <div id="inquiryList" class="space-y-2">
           </div>
         </div>
       </div>

@@ -112,6 +112,7 @@ async function loadAdminData() {
   renderMemberTable();
   renderTypeTable();
   renderOverview();
+  await loadInquiries();
 }
 
 // ============================================
@@ -555,4 +556,89 @@ function escapeHtml(text) {
   const div = document.createElement('div');
   div.textContent = text || '';
   return div.innerHTML;
+}
+
+// ============================================
+// ✉️ 문의 관리
+// ============================================
+
+let allInquiries = [];
+
+async function loadInquiries() {
+  const sb = initSupabase();
+  const { data } = await sb
+    .from('upbo_inquiries')
+    .select('*')
+    .order('created_at', { ascending: false });
+  allInquiries = data || [];
+  renderInquiries();
+  updateInquiryBadge();
+}
+
+function updateInquiryBadge() {
+  const badge = document.getElementById('inquiryBadge');
+  const unchecked = allInquiries.filter(i => !i.is_checked).length;
+  if (unchecked > 0) {
+    badge.textContent = unchecked;
+    badge.classList.remove('hidden');
+  } else {
+    badge.classList.add('hidden');
+  }
+}
+
+function renderInquiries() {
+  const container = document.getElementById('inquiryList');
+  if (allInquiries.length === 0) {
+    container.innerHTML = '<p class="text-sub text-sm">문의가 없습니다.</p>';
+    return;
+  }
+
+  container.innerHTML = allInquiries.map(inq => {
+    const date = new Date(inq.created_at);
+    const dateStr = `${date.getMonth()+1}/${date.getDate()} ${date.getHours()}:${String(date.getMinutes()).padStart(2,'0')}`;
+    const checkedClass = inq.is_checked ? 'opacity-50' : '';
+    const checkIcon = inq.is_checked ? '✅' : '⬜';
+
+    return `
+      <div class="flex items-start gap-3 p-3 rounded-xl bg-bg border border-point/10 ${checkedClass}">
+        <button onclick="toggleInquiryCheck(${inq.id}, ${!inq.is_checked})" class="text-lg mt-0.5 cursor-pointer">${checkIcon}</button>
+        <div class="flex-1 min-w-0">
+          <div class="flex items-center gap-2 mb-1">
+            <span class="font-semibold text-txt text-sm">${escapeHtml(inq.nickname)}</span>
+            <span class="text-sub text-[10px]">${dateStr}</span>
+          </div>
+          <p class="text-txt text-sm whitespace-pre-wrap break-words">${escapeHtml(inq.content)}</p>
+        </div>
+        <button onclick="deleteInquiry(${inq.id})" class="btn-delete flex-shrink-0">삭제</button>
+      </div>`;
+  }).join('');
+}
+
+async function toggleInquiryCheck(id, checked) {
+  const sb = initSupabase();
+  await sb.from('upbo_inquiries').update({ is_checked: checked }).eq('id', id);
+  await loadInquiries();
+}
+
+async function deleteInquiry(id) {
+  if (!confirm('이 문의를 삭제하시겠습니까?')) return;
+  const sb = initSupabase();
+  await sb.from('upbo_inquiries').delete().eq('id', id);
+  showToast('🗑 문의 삭제 완료');
+  await loadInquiries();
+}
+
+async function deleteCheckedInquiries() {
+  const checked = allInquiries.filter(i => i.is_checked);
+  if (checked.length === 0) {
+    showToast('체크된 문의가 없습니다');
+    return;
+  }
+  if (!confirm(`체크된 ${checked.length}개 문의를 삭제하시겠습니까?`)) return;
+  const sb = initSupabase();
+  for (const inq of checked) {
+    await sb.from('upbo_inquiries').delete().eq('id', inq.id);
+  }
+  showToast(`🗑 ${checked.length}개 문의 삭제 완료`);
+  await loadInquiries();
 }
