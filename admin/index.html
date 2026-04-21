@@ -1,0 +1,276 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="../favicon.svg">
+  <title>🔐 업보 숙제장 Admin</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#FFF8F6', card: '#FFF0ED', point: '#E8A0A0', accent: '#D4727A',
+            txt: '#3D3D3D', sub: '#8C8C8C', thead: '#F5D5D5',
+            starOn: '#E87A7A', starOff: '#E0D6D6',
+            event: '#9F7AEA', eventBg: '#F5F0FF', eventBorder: '#D6BCFA'
+          },
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="../css/style.css">
+  <style>
+    .tab-btn { transition: all 0.2s; }
+    .tab-btn.active { color: #D4727A; border-bottom: 2px solid #D4727A; font-weight: 600; }
+    .tab-btn:not(.active) { color: #8C8C8C; border-bottom: 2px solid transparent; }
+    .tab-content { display: none; }
+    .tab-content.active { display: block; }
+  </style>
+</head>
+<body class="bg-bg min-h-screen font-sans">
+
+  <!-- ==================== LOGIN SCREEN ==================== -->
+  <div id="loginScreen" class="min-h-screen flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-lg p-8 w-full max-w-sm border border-point/20">
+      <h1 class="text-2xl font-bold text-txt text-center mb-2">🔐 Admin</h1>
+      <p class="text-sub text-sm text-center mb-6">업보 숙제장 관리자</p>
+      <form id="loginForm" class="space-y-4">
+        <div>
+          <label class="block text-sm text-txt mb-1">이메일</label>
+          <input type="email" id="loginEmail" required
+            class="w-full px-4 py-2.5 rounded-xl border border-point/30 bg-bg
+            focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm text-txt mb-1">비밀번호</label>
+          <input type="password" id="loginPassword" required
+            class="w-full px-4 py-2.5 rounded-xl border border-point/30 bg-bg
+            focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+        </div>
+        <button type="submit"
+          class="w-full py-2.5 rounded-xl bg-accent text-white font-semibold
+          hover:bg-accent/90 transition-colors text-sm">
+          로그인
+        </button>
+      </form>
+      <p id="loginError" class="text-red-400 text-xs text-center mt-3 hidden"></p>
+    </div>
+  </div>
+
+  <!-- ==================== ADMIN SCREEN ==================== -->
+  <div id="adminScreen" class="hidden">
+
+    <!-- Top Bar -->
+    <header class="sticky top-0 z-50 bg-bg/95 backdrop-blur-sm border-b border-point/20">
+      <div class="max-w-5xl mx-auto px-4 py-3 flex items-center justify-between">
+        <div class="flex items-center gap-3">
+          <a href="../" class="text-sub hover:text-accent transition-colors text-sm">←</a>
+          <h1 class="text-lg font-bold text-txt">🔐 숙제장 Admin</h1>
+        </div>
+        <div class="flex items-center gap-2">
+          <span id="currentDate" class="text-sub text-xs"></span>
+          <button onclick="updateDate()"
+            class="px-3 py-1.5 rounded-lg bg-accent text-white text-xs font-semibold
+            hover:bg-accent/90 transition-colors">
+            📅 날짜 갱신
+          </button>
+          <button onclick="handleLogout()"
+            class="px-3 py-1.5 rounded-lg border border-sub/30 text-sub text-xs
+            hover:bg-red-50 hover:text-red-400 hover:border-red-200 transition-colors">
+            로그아웃
+          </button>
+        </div>
+      </div>
+    </header>
+
+    <!-- Tab Navigation -->
+    <div class="max-w-5xl mx-auto px-4 pt-4">
+      <div class="flex gap-6 border-b border-point/20">
+        <button class="tab-btn active pb-3 text-sm" data-tab="assign">📝 숙제 배정</button>
+        <button class="tab-btn pb-3 text-sm" data-tab="members">👥 시청자 관리</button>
+        <button class="tab-btn pb-3 text-sm" data-tab="types">⚙️ 항목 관리</button>
+      </div>
+    </div>
+
+    <!-- Tab Content -->
+    <main class="max-w-5xl mx-auto px-4 py-6">
+
+      <!-- ========== TAB: 숙제 배정 ========== -->
+      <div id="tab-assign" class="tab-content active">
+
+        <!-- 시청자 선택 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6 mb-6">
+          <h2 class="font-semibold text-txt mb-4">📋 시청자별 숙제 관리</h2>
+          <div class="mb-4">
+            <label class="block text-sm text-txt mb-1">시청자 선택</label>
+            <select id="memberSelect"
+              class="w-full md:w-64 px-4 py-2 rounded-xl border border-point/30 bg-bg
+              focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+              <option value="">-- 시청자 선택 --</option>
+            </select>
+          </div>
+
+          <!-- 숙제 체크박스 그리드 -->
+          <div id="taskGrid" class="hidden">
+            <p class="text-sm text-txt font-semibold mb-3">숙제 항목 (체크 + 수량 입력)</p>
+            <div id="taskCheckboxes" class="grid grid-cols-1 md:grid-cols-2 gap-3 mb-4">
+              <!-- JS에서 동적 렌더링 -->
+            </div>
+
+            <!-- 메모 -->
+            <div class="mt-4 pt-4 border-t border-point/10">
+              <label class="block text-sm text-txt mb-1">전체 메모</label>
+              <input type="text" id="assignMemo" placeholder="예: 4배잭팟, 특이사항 등..."
+                class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+                focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+            </div>
+
+            <div class="flex gap-2 mt-4">
+              <button onclick="saveTasks()"
+                class="px-6 py-2 rounded-xl bg-accent text-white text-sm font-semibold
+                hover:bg-accent/90 transition-colors">
+                💾 저장
+              </button>
+              <button onclick="deleteAllTasksForMember()"
+                class="px-4 py-2 rounded-xl border border-sub/30 text-sub text-sm
+                hover:bg-red-50 hover:text-red-400 hover:border-red-200 transition-colors">
+                🗑 전체 삭제
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- 전체 숙제 현황 (미리보기) -->
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6">
+          <h2 class="font-semibold text-txt mb-4">📊 전체 숙제 현황</h2>
+          <div id="overviewList" class="space-y-2 text-sm">
+            <!-- JS에서 동적 렌더링 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== TAB: 시청자 관리 ========== -->
+      <div id="tab-members" class="tab-content">
+
+        <!-- 시청자 추가 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6 mb-6">
+          <h2 class="font-semibold text-txt mb-4">➕ 시청자 추가</h2>
+          <form id="addMemberForm" class="flex flex-col md:flex-row gap-3">
+            <div class="flex-1">
+              <label class="block text-sm text-txt mb-1">닉네임</label>
+              <input type="text" id="inputNickname" required placeholder="닉네임"
+                class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+                focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+            </div>
+            <div class="flex-1">
+              <label class="block text-sm text-txt mb-1">아이디</label>
+              <input type="text" id="inputUserId" required placeholder="아이디"
+                class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+                focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+            </div>
+            <div class="flex items-end">
+              <button type="submit"
+                class="px-6 py-2 rounded-xl bg-accent text-white text-sm font-semibold
+                hover:bg-accent/90 transition-colors whitespace-nowrap">
+                추가
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 시청자 목록 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6">
+          <h2 class="font-semibold text-txt mb-4">👥 시청자 목록</h2>
+          <div id="memberTable" class="space-y-2">
+            <!-- JS에서 동적 렌더링 -->
+          </div>
+        </div>
+      </div>
+
+      <!-- ========== TAB: 항목 관리 ========== -->
+      <div id="tab-types" class="tab-content">
+
+        <!-- 항목 추가 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6 mb-6">
+          <h2 class="font-semibold text-txt mb-4">➕ 숙제 항목 추가</h2>
+          <form id="addTypeForm" class="flex flex-col md:flex-row gap-3">
+            <div class="flex-1">
+              <label class="block text-sm text-txt mb-1">항목 이름</label>
+              <input type="text" id="inputTypeName" required placeholder="예: 그림 사이드 배너"
+                class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+                focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+            </div>
+            <div>
+              <label class="block text-sm text-txt mb-1">분류</label>
+              <select id="inputTypeCategory"
+                class="px-4 py-2 rounded-xl border border-point/30 bg-bg
+                focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+                <option value="regular">🔵 고정 (룰렛)</option>
+                <option value="event">🟣 이벤트</option>
+              </select>
+            </div>
+            <div class="flex items-end">
+              <button type="submit"
+                class="px-6 py-2 rounded-xl bg-accent text-white text-sm font-semibold
+                hover:bg-accent/90 transition-colors whitespace-nowrap">
+                추가
+              </button>
+            </div>
+          </form>
+        </div>
+
+        <!-- 항목 목록 -->
+        <div class="bg-white rounded-2xl shadow-sm border border-point/20 p-6">
+          <h2 class="font-semibold text-txt mb-4">⚙️ 숙제 항목 목록</h2>
+          <div id="typeTable" class="space-y-2">
+            <!-- JS에서 동적 렌더링 -->
+          </div>
+        </div>
+      </div>
+
+    </main>
+  </div>
+
+  <!-- Edit Member Modal -->
+  <div id="editMemberModal" class="hidden fixed inset-0 bg-black/30 z-50 flex items-center justify-center px-4">
+    <div class="bg-white rounded-2xl shadow-xl p-6 w-full max-w-sm border border-point/20">
+      <h3 class="font-semibold text-txt mb-4">✏️ 시청자 수정</h3>
+      <form id="editMemberForm" class="space-y-3">
+        <input type="hidden" id="editMemberId">
+        <div>
+          <label class="block text-sm text-txt mb-1">닉네임</label>
+          <input type="text" id="editNickname" required
+            class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+            focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+        </div>
+        <div>
+          <label class="block text-sm text-txt mb-1">아이디</label>
+          <input type="text" id="editUserId" required
+            class="w-full px-4 py-2 rounded-xl border border-point/30 bg-bg
+            focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm">
+        </div>
+        <div class="flex gap-2 pt-2">
+          <button type="submit"
+            class="flex-1 py-2 rounded-xl bg-accent text-white text-sm font-semibold
+            hover:bg-accent/90 transition-colors">저장</button>
+          <button type="button" onclick="closeEditMemberModal()"
+            class="flex-1 py-2 rounded-xl border border-sub/30 text-sub text-sm
+            hover:bg-gray-50 transition-colors">취소</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="../js/supabase-config.js"></script>
+  <script src="../js/upbo-admin.js"></script>
+</body>
+</html>

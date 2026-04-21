@@ -1,0 +1,93 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="icon" type="image/svg+xml" href="favicon.svg">
+  <title>💖 업보 숙제장</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <link href="https://cdn.jsdelivr.net/gh/orioncactus/pretendard@v1.3.9/dist/web/static/pretendard.min.css" rel="stylesheet">
+  <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&display=swap" rel="stylesheet">
+  <script>
+    tailwind.config = {
+      theme: {
+        extend: {
+          colors: {
+            bg: '#FFF8F6', card: '#FFF0ED', point: '#E8A0A0', accent: '#D4727A',
+            txt: '#3D3D3D', sub: '#8C8C8C', thead: '#F5D5D5',
+            starOn: '#E87A7A', starOff: '#E0D6D6',
+            event: '#9F7AEA', eventBg: '#F5F0FF', eventBorder: '#D6BCFA'
+          },
+          fontFamily: {
+            sans: ['Pretendard', 'sans-serif'],
+            poppins: ['Poppins', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <link rel="stylesheet" href="css/style.css">
+</head>
+<body class="bg-bg min-h-screen font-sans">
+
+  <!-- Header Banner -->
+  <header class="pt-8 pb-2">
+    <div class="max-w-5xl mx-auto px-4">
+      <div class="relative overflow-hidden rounded-2xl" style="aspect-ratio: 2320/338;">
+        <img src="assets/images/banner.png" alt="업보 숙제장"
+          class="w-full h-full object-cover"
+          onerror="this.parentElement.style.background='linear-gradient(135deg, #FFF0ED 0%, #F5D5D5 50%, #E8A0A0 100%)';">
+        <div class="absolute inset-0 bg-black/15 flex items-center justify-center">
+          <div class="text-center">
+            <h1 class="text-3xl md:text-4xl font-bold text-white drop-shadow-lg">
+              💖 <span class="font-poppins">업보 숙제장</span>
+            </h1>
+            <p id="lastUpdated" class="text-white/80 text-sm mt-1 drop-shadow">갱신일: 불러오는 중...</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main -->
+  <main class="max-w-5xl mx-auto px-4 pb-16 mt-6">
+
+    <!-- Search -->
+    <div class="mb-6">
+      <input type="text" id="searchInput" placeholder="🔍 닉네임 또는 아이디 검색..."
+        class="w-full md:w-80 px-4 py-2.5 rounded-xl border border-point/30 bg-white
+        focus:outline-none focus:ring-2 focus:ring-accent/30 text-sm text-txt
+        placeholder:text-sub/60">
+    </div>
+
+    <!-- Member Count -->
+    <p id="memberCount" class="text-sub text-xs mb-3 hidden"></p>
+
+    <!-- Member List -->
+    <div id="memberList" class="space-y-3">
+      <!-- JS에서 동적 렌더링 -->
+    </div>
+
+    <!-- Empty State -->
+    <div id="emptyState" class="hidden text-center py-16">
+      <p class="text-sub text-lg">📋 등록된 숙제가 없습니다</p>
+    </div>
+
+    <!-- Loading State -->
+    <div id="loadingState" class="text-center py-16">
+      <div class="inline-block w-8 h-8 border-3 border-point border-t-transparent rounded-full animate-spin"></div>
+      <p class="text-sub mt-3 text-sm">숙제 목록을 불러오는 중...</p>
+    </div>
+
+  </main>
+
+  <!-- Footer -->
+  <footer class="text-center py-6 text-sub text-xs">
+    <p>© 2026 QP 💖</p>
+  </footer>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="js/supabase-config.js"></script>
+  <script src="js/upbo.js"></script>
+</body>
+</html>
