@@ -408,7 +408,7 @@ function renderOverview() {
 
   const membersWithTasks = allMembers.filter(m =>
     allTasks.some(t => t.member_id === m.id && t.quantity > 0)
-  );
+  ).sort((a, b) => a.nickname.localeCompare(b.nickname, 'ko'));
 
   if (membersWithTasks.length === 0) {
     container.innerHTML = '<p class="text-sub text-sm">배정된 숙제가 없습니다.</p>';

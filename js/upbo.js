@@ -109,10 +109,10 @@ async function loadUpboData() {
       memberTasks[t.member_id].push(t);
     });
 
-    // 숙제가 있는 멤버만 필터
+    // 숙제가 있는 멤버만 필터 + 닉네임 가나다순 정렬
     const activeMembers = (members || []).filter(m =>
       memberTasks[m.id] && memberTasks[m.id].length > 0
-    );
+    ).sort((a, b) => a.nickname.localeCompare(b.nickname, 'ko'));
 
     if (activeMembers.length === 0) {
       emptyState.style.display = 'block';
