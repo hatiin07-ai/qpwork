@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64">
+  <!-- Book body -->
+  <path d="M12 8 C12 8 32 4 32 4 L32 52 C32 52 12 56 12 56 Z" fill="#E8A0A0" stroke="#D4727A" stroke-width="1.5"/>
+  <path d="M52 8 C52 8 32 4 32 4 L32 52 C32 52 52 56 52 56 Z" fill="#FFF0ED" stroke="#D4727A" stroke-width="1.5"/>
+  <!-- Book spine -->
+  <line x1="32" y1="4" x2="32" y2="52" stroke="#D4727A" stroke-width="2"/>
+  <!-- Page lines (right side) -->
+  <line x1="37" y1="14" x2="47" y2="12" stroke="#E8A0A0" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="37" y1="20" x2="47" y2="18" stroke="#E8A0A0" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="37" y1="26" x2="47" y2="24" stroke="#E8A0A0" stroke-width="1.2" stroke-linecap="round"/>
+  <line x1="37" y1="32" x2="47" y2="30" stroke="#E8A0A0" stroke-width="1.2" stroke-linecap="round"/>
+  <!-- Heart on left page -->
+  <path d="M22 20 C22 17 18 15 18 18 C18 15 14 17 14 20 C14 24 18 27 18 27 C18 27 22 24 22 20Z" fill="#D4727A" opacity="0.8"/>
+</svg>
