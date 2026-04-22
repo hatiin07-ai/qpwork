@@ -111,7 +111,7 @@ async function loadUpboData() {
 
     // 숙제가 있는 멤버만 필터 + 닉네임 가나다순 정렬
     const activeMembers = (members || []).filter(m =>
-      memberTasks[m.id] && memberTasks[m.id].length > 0
+      memberTasks[m.id] && memberTasks[m.id].length > 0 && m.is_hidden !== true
     ).sort((a, b) => a.nickname.localeCompare(b.nickname, 'ko'));
 
     if (activeMembers.length === 0) {
