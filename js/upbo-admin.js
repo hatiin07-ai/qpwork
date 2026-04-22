@@ -159,9 +159,10 @@ async function updateDate() {
 function renderMemberSelect() {
   const select = document.getElementById('memberSelect');
   select.innerHTML = '<option value="">-- 시청자 선택 --</option>' +
-    allMembers.map(m =>
-      `<option value="${m.id}">${escapeHtml(m.nickname)} (${escapeHtml(m.user_id)})</option>`
-    ).join('');
+    allMembers.map(m => {
+      const hidden = m.is_hidden ? ' [숨김]' : '';
+      return `<option value="${m.id}">${escapeHtml(m.nickname)} (${escapeHtml(m.user_id)})${hidden}</option>`;
+    }).join('');
 }
 
 function renderMemberTable() {
@@ -178,9 +179,11 @@ function renderMemberTable() {
         <div>
           <span class="font-semibold text-txt text-sm">${escapeHtml(m.nickname)}</span>
           <span class="text-sub text-xs ml-1">(${escapeHtml(m.user_id)})</span>
+          ${m.is_hidden ? '<span class="ml-2 text-xs bg-gray-200 text-sub px-1.5 py-0.5 rounded">숨김</span>' : ''}
           ${taskCount > 0 ? `<span class="ml-2 text-xs text-accent">숙제 ${taskCount}개</span>` : ''}
         </div>
         <div class="flex gap-1">
+          <button onclick="toggleMemberHidden(${m.id}, ${!m.is_hidden})" class="btn-edit">${m.is_hidden ? '👁 보이기' : '🙈 숨기기'}</button>
           <button onclick="openEditMemberModal(${m.id})" class="btn-edit">수정</button>
           <button onclick="deleteMember(${m.id})" class="btn-delete">삭제</button>
         </div>
@@ -238,6 +241,18 @@ async function handleEditMember(e) {
 
   closeEditMemberModal();
   showToast(`✅ ${nickname} 수정 완료!`);
+  await loadAdminData();
+}
+
+async function toggleMemberHidden(id, hidden) {
+  const sb = initSupabase();
+  const { error } = await sb.from('upbo_members').update({ is_hidden: hidden }).eq('id', id);
+  if (error) {
+    showToast('변경 실패: ' + error.message);
+    return;
+  }
+  const member = allMembers.find(m => m.id === id);
+  showToast(hidden ? `🙈 ${member?.nickname} 숨김 처리` : `👁 ${member?.nickname} 다시 표시`);
   await loadAdminData();
 }
 
