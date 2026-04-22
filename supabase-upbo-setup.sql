@@ -110,3 +110,26 @@ CREATE TRIGGER upbo_tasks_updated_at
 -- ============================================
 -- 💡 Supabase 대시보드 > SQL Editor 에서 실행하세요
 -- ============================================
+
+-- ============================================
+-- 6. 시청자 숨기기 기능 (컴럼 추가)
+-- ============================================
+ALTER TABLE upbo_members ADD COLUMN is_hidden BOOLEAN DEFAULT false;
+
+-- ============================================
+-- 7. 문의 테이블
+-- ============================================
+CREATE TABLE upbo_inquiries (
+  id BIGINT PRIMARY KEY GENERATED ALWAYS AS IDENTITY,
+  nickname TEXT NOT NULL,
+  content TEXT NOT NULL,
+  is_checked BOOLEAN DEFAULT false,
+  created_at TIMESTAMPTZ DEFAULT now()
+);
+
+ALTER TABLE upbo_inquiries ENABLE ROW LEVEL SECURITY;
+
+CREATE POLICY "Public insert inquiries" ON upbo_inquiries FOR INSERT WITH CHECK (true);
+CREATE POLICY "Auth read inquiries" ON upbo_inquiries FOR SELECT USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth update inquiries" ON upbo_inquiries FOR UPDATE USING (auth.role() = 'authenticated');
+CREATE POLICY "Auth delete inquiries" ON upbo_inquiries FOR DELETE USING (auth.role() = 'authenticated');
